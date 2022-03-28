@@ -106,7 +106,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         removeButton.addActionListener(this);
         add(outputArea);
         outputArea.setEditable(false);
-        setSize(720, 200);
+        setSize(1080, 720);
         setVisible(true);
         blankDisplay();
 
@@ -120,15 +120,19 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         String message = "";
         if (event.getSource() == addR) {
             message = addEntry("generic");
+            blankDisplay();
         }
         if (event.getSource() == lookUpByDate) {
             message = lookupEntry();
+            blankDisplay();
         }
         if (event.getSource() == findAllByDate) {
             message = lookupEntries();
+            blankDisplay();
         }
         if (event.getSource() == removeButton) {
             message = removeEntry();
+            blankDisplay();
         }
         if(event.getSource() == isSprintButton)
         {
@@ -152,7 +156,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             message = "swim true";
         }
         outputArea.setText(message);
-        blankDisplay();
+
     } // actionPerformed
 
     public String addEntry(String what) {
@@ -168,8 +172,10 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             int mm = Integer.parseInt(mins.getText());
             int s = Integer.parseInt(secs.getText());
 
-            Entry e = new Entry(n, d, m, y, h, mm, s, km);
+            Entry e;
             if (isSprintEntry) {
+                System.out.println("reps: " + reps);
+                System.out.println("reps: " + rec);
                 int rps = Integer.parseInt(reps.getText());
                 int rvy = Integer.parseInt(rec.getText());
                 e = new SprintEntry(n, d, m, y, h, mm, s, km, rps, rvy);
@@ -180,13 +186,16 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
                 String terrain = ter.getText();
                 String tempo = temp.getText();
                 e = new CycleEntry(n, d, m, y, h, mm, s, km, terrain, tempo);
+            }else
+            {
+                e = new Entry(n, d, m, y, h, mm, s, km);
             }
             message = myAthletes.addEntry(e);
             System.out.println("Adding " + what + " entry to the records");
         }
         catch(Exception e)
         {
-            //
+            System.out.println(e);
         }
 
         return message;
@@ -251,6 +260,11 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         mins.setText("");
         secs.setText("");
         dist.setText("");
+        pool.setText("");
+        reps.setText("");
+        rec.setText("");
+        ter.setText("");
+        temp.setText("");
 
     }// blankDisplay
     // Fills the input fields on the display for testing purposes only

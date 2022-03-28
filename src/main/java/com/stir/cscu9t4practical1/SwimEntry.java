@@ -12,7 +12,19 @@ public class SwimEntry extends Entry{
 
     public String getWhere()
     {
-        return poolType;
+        String where = poolType;
+        if (where.equals("pool"))
+        {
+            where = "in a " + where;
+        }
+        return where;
     }
+
+    public String getEntry () {
+        String result = getName()+" swam " + getDistance() + " km "+ getWhere()+ " in "
+                +getHour()+":"+getMin()+":"+ getSec() + " on "
+                +getDay()+"/"+getMonth()+"/"+getYear()+"\n";
+        return result;
+    } //getEntry
 
 }

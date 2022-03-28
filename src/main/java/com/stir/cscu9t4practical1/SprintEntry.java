@@ -22,4 +22,18 @@ public class SprintEntry extends Entry {
         return recovery;
     }
 
+    public String getEntry () {
+        String result = getName()+" sprinted " + getRepetitions()+ "x" + Math.round(getDistance()*100) + "m in "
+                +getHour()+":"+getMin()+":"+ getSec()
+                + " with " + getRecovery() + " minutes recovery" + " on "
+                +getDay()+"/"+getMonth()+"/"+getYear()+"\n";
+        return result;
+    } //getEntry
+
+    public float getDistance()
+    {
+        return super.getDistance()/100;
+    }
+
+
 }
