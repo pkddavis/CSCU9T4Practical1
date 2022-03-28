@@ -17,6 +17,12 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JTextField mins = new JTextField(2);
     private JTextField secs = new JTextField(2);
     private JTextField dist = new JTextField(4);
+    private JTextField pool = new JTextField(30);
+    private JTextField reps = new JTextField(4);
+    private JTextField rec = new JTextField(4);
+    private JTextField ter = new JTextField(30);
+    private JTextField temp = new JTextField(4);
+
     private JLabel labn = new JLabel(" Name:");
     private JLabel labd = new JLabel(" Day:");
     private JLabel labm = new JLabel(" Month:");
@@ -25,9 +31,25 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JLabel labmm = new JLabel(" Mins:");
     private JLabel labs = new JLabel(" Secs:");
     private JLabel labdist = new JLabel(" Distance (km):");
+    private JLabel labPool = new JLabel("Pool type:");
+    private JLabel labReps = new JLabel("Repetitions:");
+    private JLabel labRec = new JLabel("Recovery (min):");
+    private JLabel labTer = new JLabel("Terrain:");
+    private JLabel labTemp = new JLabel("Tempo (min):");
+
     private JButton addR = new JButton("Add");
     private JButton lookUpByDate = new JButton("Look Up");
     private JButton findAllByDate = new JButton("Find all");
+    private JRadioButton isCycleButton = new JRadioButton("isCycleEntry");
+    private JRadioButton isSprintButton = new JRadioButton("isSprintEntry");
+    private JRadioButton isSwimButton = new JRadioButton("isSwimEntry");
+
+
+    private boolean isCycleEntry = false;
+    private boolean isSprintEntry = false;
+    private boolean isSwimEntry = false;
+
+
 
     private TrainingRecord myAthletes = new TrainingRecord();
 
@@ -65,10 +87,20 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         add(labdist);
         add(dist);
         dist.setEditable(true);
+        //Radio buttons for Entry type selection
+        add(isCycleButton);
+        add(isSprintButton);
+        add(isSwimButton);
+        isCycleButton.addActionListener(this);
+        isSprintButton.addActionListener(this);
+        isSwimButton.addActionListener(this);
+        //
         add(addR);
         addR.addActionListener(this);
         add(lookUpByDate);
         lookUpByDate.addActionListener(this);
+        add(findAllByDate);
+        findAllByDate.addActionListener(this);
         add(outputArea);
         outputArea.setEditable(false);
         setSize(720, 200);
@@ -90,7 +122,28 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
             message = lookupEntry();
         }
         if (event.getSource() == findAllByDate) {
-            message = lookupEntry();
+            message = lookupEntries();
+        }
+        if(event.getSource() == isSprintButton)
+        {
+            isCycleButton.setSelected(false);
+            isSwimButton.setSelected(false);
+            displaySprintOptions();
+            message = "sprint true";
+        }
+        if(event.getSource() == isCycleButton)
+        {
+            isSprintButton.setSelected(false);
+            isSwimButton.setSelected(false);
+            displayCycleOptions();
+            message = "cycle true";
+        }
+        if(event.getSource() == isSwimButton)
+        {
+            isCycleButton.setSelected(false);
+            isSprintButton.setSelected(false);
+            displaySwimOptions();
+            message = "swim true";
         }
         outputArea.setText(message);
         blankDisplay();
@@ -107,7 +160,24 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         int h = Integer.parseInt(hours.getText());
         int mm = Integer.parseInt(mins.getText());
         int s = Integer.parseInt(secs.getText());
+
+        int rps = Integer.parseInt(reps.getText());
+        int rvy = Integer.parseInt(rec.getText());
+        String poolType = pool.getText();
+        String terrain = ter.getText();
+        String tempo = temp.getText();
+
         Entry e = new Entry(n, d, m, y, h, mm, s, km);
+        if(isSprintEntry)
+        {
+            e = new SprintEntry(n, d, m, y, h, mm, s, km, rps, rvy);
+        } else if (isSwimEntry)
+        {
+            e = new SwimEntry(n, d, m, y, h, mm, s, km, poolType);
+        }else if (isCycleEntry)
+        {
+            e = new CycleEntry(n, d, m, y, h, mm, s, km, terrain, tempo);
+        }
         myAthletes.addEntry(e);
         return message;
     }
@@ -152,6 +222,61 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         mins.setText(String.valueOf(ent.getMin()));
         secs.setText(String.valueOf(ent.getSec()));
         dist.setText(String.valueOf(ent.getDistance()));
+    }
+
+    public void displayCycleOptions()
+    {
+        removeOptional();
+        isCycleEntry = true;
+        add(labTer);
+        add(ter);
+        ter.setEditable(true);
+        ter.setText("");
+        add(labTemp);
+        add(temp);
+        temp.setEditable(true);
+        temp.setText("");
+    }
+
+    public void displaySprintOptions()
+    {
+        removeOptional();
+        isSprintEntry = true;
+        add(labReps);
+        add(reps);
+        reps.setEditable(true);
+        reps.setText("");
+        add(labRec);
+        add(rec);
+        rec.setEditable(true);
+        rec.setText("");
+    }
+
+    public void displaySwimOptions()
+    {
+        removeOptional();
+        isSwimEntry = true;
+        add(labPool);
+        add(pool);
+        pool.setEditable(true);
+        pool.setText("");
+    }
+
+    public void removeOptional()
+    {
+        remove(labPool);
+        remove(pool);
+        remove(labReps);
+        remove(reps);
+        remove(labRec);
+        remove(rec);
+        remove(labTer);
+        remove(ter);
+        remove(labTemp);
+        remove(temp);
+        isSwimEntry = false;
+        isSprintEntry = false;
+        isCycleEntry = false;
     }
 
 } // TrainingRecordGUI
