@@ -40,6 +40,7 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     private JButton addR = new JButton("Add");
     private JButton lookUpByDate = new JButton("Look Up");
     private JButton findAllByDate = new JButton("Find all");
+    private JButton removeButton = new JButton("Remove Entry");
     private JRadioButton isCycleButton = new JRadioButton("isCycleEntry");
     private JRadioButton isSprintButton = new JRadioButton("isSprintEntry");
     private JRadioButton isSwimButton = new JRadioButton("isSwimEntry");
@@ -101,6 +102,8 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         lookUpByDate.addActionListener(this);
         add(findAllByDate);
         findAllByDate.addActionListener(this);
+        add(removeButton);
+        removeButton.addActionListener(this);
         add(outputArea);
         outputArea.setEditable(false);
         setSize(720, 200);
@@ -123,6 +126,9 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
         }
         if (event.getSource() == findAllByDate) {
             message = lookupEntries();
+        }
+        if (event.getSource() == removeButton) {
+            message = removeEntry();
         }
         if(event.getSource() == isSprintButton)
         {
@@ -150,54 +156,89 @@ public class TrainingRecordGUI extends JFrame implements ActionListener {
     } // actionPerformed
 
     public String addEntry(String what) {
-        String message = "Record added\n";
-        System.out.println("Adding "+what+" entry to the records");
-        String n = name.getText();
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        float km = java.lang.Float.parseFloat(dist.getText());
-        int h = Integer.parseInt(hours.getText());
-        int mm = Integer.parseInt(mins.getText());
-        int s = Integer.parseInt(secs.getText());
+        String message = "Cannot add entry when one or more fields are empty.";
 
-        int rps = Integer.parseInt(reps.getText());
-        int rvy = Integer.parseInt(rec.getText());
-        String poolType = pool.getText();
-        String terrain = ter.getText();
-        String tempo = temp.getText();
+        try {
+            String n = name.getText();
+            int m = Integer.parseInt(month.getText());
+            int d = Integer.parseInt(day.getText());
+            int y = Integer.parseInt(year.getText());
+            float km = java.lang.Float.parseFloat(dist.getText());
+            int h = Integer.parseInt(hours.getText());
+            int mm = Integer.parseInt(mins.getText());
+            int s = Integer.parseInt(secs.getText());
 
-        Entry e = new Entry(n, d, m, y, h, mm, s, km);
-        if(isSprintEntry)
-        {
-            e = new SprintEntry(n, d, m, y, h, mm, s, km, rps, rvy);
-        } else if (isSwimEntry)
-        {
-            e = new SwimEntry(n, d, m, y, h, mm, s, km, poolType);
-        }else if (isCycleEntry)
-        {
-            e = new CycleEntry(n, d, m, y, h, mm, s, km, terrain, tempo);
+            Entry e = new Entry(n, d, m, y, h, mm, s, km);
+            if (isSprintEntry) {
+                int rps = Integer.parseInt(reps.getText());
+                int rvy = Integer.parseInt(rec.getText());
+                e = new SprintEntry(n, d, m, y, h, mm, s, km, rps, rvy);
+            } else if (isSwimEntry) {
+                String poolType = pool.getText();
+                e = new SwimEntry(n, d, m, y, h, mm, s, km, poolType);
+            } else if (isCycleEntry) {
+                String terrain = ter.getText();
+                String tempo = temp.getText();
+                e = new CycleEntry(n, d, m, y, h, mm, s, km, terrain, tempo);
+            }
+            message = myAthletes.addEntry(e);
+            System.out.println("Adding " + what + " entry to the records");
         }
-        myAthletes.addEntry(e);
+        catch(Exception e)
+        {
+            //
+        }
+
         return message;
     }
     
     public String lookupEntry() {
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        outputArea.setText("looking up record ...");
-        String message = myAthletes.lookupEntry(d, m, y);
+        String message = "Cannot lookup when fields are empty.";
+        try {
+            int m = Integer.parseInt(month.getText());
+            int d = Integer.parseInt(day.getText());
+            int y = Integer.parseInt(year.getText());
+            outputArea.setText("looking up record ...");
+            message = myAthletes.lookupEntry(d, m, y);
+        }
+        catch(Exception e)
+        {
+            //
+        }
         return message;
     }
 
     public String lookupEntries()
     {
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        outputArea.setText("looking up records ...");
-        String message = myAthletes.lookupEntries(d, m, y);
+        String message = "Cannot lookup when fields are empty.";
+        try {
+            int m = Integer.parseInt(month.getText());
+            int d = Integer.parseInt(day.getText());
+            int y = Integer.parseInt(year.getText());
+            outputArea.setText("looking up records ...");
+            message = myAthletes.lookupEntries(d, m, y);
+        }
+        catch(Exception e){
+            //
+        }
+        return message;
+    }
+
+    public String removeEntry()
+    {
+        String message = "Cannot lookup when fields are empty.";
+        try {
+            String n = name.getText();
+            int m = Integer.parseInt(month.getText());
+            int d = Integer.parseInt(day.getText());
+            int y = Integer.parseInt(year.getText());
+            outputArea.setText("deleting entry ...");
+            message = myAthletes.removeEntry(n, d, m, y);
+        }
+        catch(Exception e)
+        {
+            //
+        }
         return message;
     }
 

@@ -15,8 +15,14 @@ public class TrainingRecord {
     } //constructor
     
     // add a record to the list
-   public void addEntry(Entry e){
-       tr.add(e);    
+   public String addEntry(Entry e){
+        String msg = "Cannot add duplicates\n";
+        if(!hasDuplicate(e))
+        {
+            msg = "Record added\n";
+            tr.add(e);
+        }
+        return msg;
    } // addClass
    
    // look up the entry of a given day and month
@@ -45,6 +51,33 @@ public class TrainingRecord {
         }
         return result;
     } // lookupEntry
+
+    public String removeEntry(String n, int d, int m, int y)
+    {
+        String msg = "Nothing was removed";
+        ListIterator<Entry> iter = tr.listIterator();
+        while (iter.hasNext()) {
+            Entry current = iter.next();
+            if (current.getDay()==d && current.getMonth()==m && current.getYear()==y && current.getName().equals(n)) {
+                iter.remove();
+                msg = "Entry removed";
+            }
+        }
+        return msg;
+    }
+
+    public boolean hasDuplicate(Entry e)
+    {
+        boolean hasDupl = false;
+        ListIterator<Entry> iter = tr.listIterator();
+        while (iter.hasNext()) {
+            Entry current = iter.next();
+            if (current.getDay()==e.getDay() && current.getMonth()==e.getMonth() && current.getYear()==e.getYear() && current.getName().equals(e.getName())) {
+                hasDupl = true;
+            }
+        }
+        return hasDupl;
+    }
    
    // Count the number of entries
    public int getNumberOfEntries(){
